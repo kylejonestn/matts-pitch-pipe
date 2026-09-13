@@ -35,17 +35,18 @@ function initAudio() {
 
 // Load saved instrument
 const savedInstrument = localStorage.getItem('instrument') || 'pure';
-instrumentSelect.value = savedInstrument;
-
-instrumentSelect.addEventListener('change', (e) => {
-    localStorage.setItem('instrument', e.target.value);
-});
+if (instrumentSelect) {
+    instrumentSelect.value = savedInstrument;
+    instrumentSelect.addEventListener('change', (e) => {
+        localStorage.setItem('instrument', e.target.value);
+    });
+}
 
 function playNote(freq, btn) {
     initAudio();
     stopNote(); // Stop any currently playing note just in case
 
-    const instrument = instrumentSelect.value;
+    const instrument = instrumentSelect ? instrumentSelect.value : savedInstrument;
     const t = audioCtx.currentTime;
 
     const gainNode = audioCtx.createGain();

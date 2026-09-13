@@ -27,6 +27,9 @@ let activeBtn = null;
 function initAudio() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (typeof unmute === 'function') {
+            unmute(audioCtx);
+        }
     }
     if (audioCtx.state === 'suspended') {
         audioCtx.resume();

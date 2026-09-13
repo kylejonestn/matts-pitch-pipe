@@ -216,3 +216,51 @@ if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
 }
 
 setupNotes();
+
+// Notes logic
+const notesToggleBtn = document.getElementById('notes-toggle-btn');
+const notesPanel = document.getElementById('notes-panel');
+const notesTextarea = document.getElementById('notes-textarea');
+const clearNotesBtn = document.getElementById('clear-notes-btn');
+const mainContainer = document.getElementById('main-container');
+
+// Load saved notes
+const savedNotes = localStorage.getItem('setlist-notes') || '';
+notesTextarea.value = savedNotes;
+
+// Save notes on input
+notesTextarea.addEventListener('input', (e) => {
+    localStorage.setItem('setlist-notes', e.target.value);
+});
+
+// Toggle notes panel
+function toggleNotes(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    document.body.classList.toggle('notes-open');
+}
+
+notesToggleBtn.addEventListener('click', toggleNotes);
+notesToggleBtn.addEventListener('touchstart', toggleNotes);
+
+// Close notes when clicking the background
+mainContainer.addEventListener('click', (e) => {
+    // Only close if we clicked the container itself or the pitch-pipe div directly (not a note button)
+    if (document.body.classList.contains('notes-open') && (e.target === mainContainer || e.target.id === 'pitch-pipe')) {
+        document.body.classList.remove('notes-open');
+    }
+});
+mainContainer.addEventListener('touchstart', (e) => {
+    if (document.body.classList.contains('notes-open') && (e.target === mainContainer || e.target.id === 'pitch-pipe')) {
+        document.body.classList.remove('notes-open');
+    }
+});
+
+// Clear button
+clearNotesBtn.addEventListener('click', () => {
+    notesTextarea.value = '';
+    localStorage.removeItem('setlist-notes');
+    notesTextarea.focus();
+});

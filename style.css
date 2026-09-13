@@ -164,3 +164,111 @@ body {
     transform: scale(1.1);
     box-shadow: 0 0 15px var(--note-active);
 }
+
+/* Notes Panel Styles */
+.notes-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--note-bg);
+    color: var(--text-color);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    z-index: 100;
+    transition: all 0.3s;
+}
+
+.notes-toggle-btn:hover {
+    background-color: var(--note-hover);
+    transform: translateX(-50%) scale(1.05);
+}
+
+body.notes-open .notes-toggle-btn {
+    bottom: calc(40vh + 20px);
+    background-color: var(--note-active);
+    color: var(--note-active-text);
+}
+
+.notes-panel {
+    position: fixed;
+    bottom: -40vh;
+    left: 0;
+    width: 100%;
+    height: 40vh;
+    background-color: var(--pipe-bg);
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    transition: bottom 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.5rem 2rem 1.5rem;
+    z-index: 90;
+}
+
+body.notes-open .notes-panel {
+    bottom: 0;
+}
+
+.notes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.notes-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.clear-btn {
+    background-color: transparent;
+    color: #ef4444;
+    border: 1px solid #ef4444;
+    padding: 0.3rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clear-btn:hover {
+    background-color: #ef4444;
+    color: #fff;
+}
+
+#notes-textarea {
+    flex: 1;
+    width: 100%;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: none;
+    outline: none;
+}
+
+#notes-textarea:focus {
+    border-color: var(--note-active);
+}
+
+/* Push pitch pipe up */
+.pitch-pipe-container {
+    transition: transform 0.3s ease-in-out;
+}
+
+body.notes-open .pitch-pipe-container {
+    transform: translateY(-15vh);
+}

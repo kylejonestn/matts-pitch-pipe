@@ -60,7 +60,7 @@ function playNote(freq, btn) {
         osc.frequency.value = freq;
         
         gainNode.gain.setValueAtTime(0, t);
-        gainNode.gain.linearRampToValueAtTime(0.5, t + 0.05);
+        gainNode.gain.linearRampToValueAtTime(1.0, t + 0.05);
         
         osc.connect(gainNode);
         oscillators.push(osc);
@@ -85,7 +85,7 @@ function playNote(freq, btn) {
         
         // Attack is a bit slower for a reed instrument
         gainNode.gain.setValueAtTime(0, t);
-        gainNode.gain.linearRampToValueAtTime(0.3, t + 0.1);
+        gainNode.gain.linearRampToValueAtTime(0.8, t + 0.1);
 
         oscillators.push(osc1, osc2);
     } else if (instrument === 'piano') {
@@ -103,8 +103,8 @@ function playNote(freq, btn) {
 
         // Piano envelope: fast attack, quick initial decay
         gainNode.gain.setValueAtTime(0, t);
-        gainNode.gain.linearRampToValueAtTime(0.6, t + 0.02);
-        gainNode.gain.exponentialRampToValueAtTime(0.1, t + 1.5);
+        gainNode.gain.linearRampToValueAtTime(1.2, t + 0.02);
+        gainNode.gain.exponentialRampToValueAtTime(0.2, t + 1.5);
 
         oscillators.push(osc1, osc2);
     }

@@ -125,7 +125,7 @@ function stopNote() {
             // Read current gain value to ramp down from it smoothly
             const currentGain = gainNode.gain.value;
             gainNode.gain.setValueAtTime(currentGain, t);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+            gainNode.gain.linearRampToValueAtTime(0, t + 0.1);
             
             oscillators.forEach(osc => {
                 osc.stop(t + 0.1);

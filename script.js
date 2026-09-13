@@ -92,24 +92,41 @@ function playNote(freq, btn) {
 
         oscillators.push(osc1, osc2);
     } else if (instrument === 'piano') {
-        // Simple piano-like synth
-        const osc1 = audioCtx.createOscillator();
+        // Better piano-like synth using additive synthesis
+        const osc1 = audioCtx.createOscillator(); // Fundamental
         osc1.type = 'triangle';
         osc1.frequency.value = freq;
 
-        const osc2 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator(); // 1st Overtone (Octave)
         osc2.type = 'sine';
-        osc2.frequency.value = freq * 2; // Add an overtone
+        osc2.frequency.value = freq * 2.0;
 
-        osc1.connect(gainNode);
-        osc2.connect(gainNode);
+        const osc3 = audioCtx.createOscillator(); // 2nd Overtone (Octave + Fifth)
+        osc3.type = 'sine';
+        osc3.frequency.value = freq * 3.0;
 
-        // Piano envelope: fast attack, quick initial decay
+        const osc4 = audioCtx.createOscillator(); // 3rd Overtone (Two Octaves)
+        osc4.type = 'sine';
+        osc4.frequency.value = freq * 4.0;
+
+        // Individual gains to balance the timbre
+        const gain1 = audioCtx.createGain(); gain1.gain.value = 1.0;
+        const gain2 = audioCtx.createGain(); gain2.gain.value = 0.4;
+        const gain3 = audioCtx.createGain(); gain3.gain.value = 0.15;
+        const gain4 = audioCtx.createGain(); gain4.gain.value = 0.05;
+
+        osc1.connect(gain1); gain1.connect(gainNode);
+        osc2.connect(gain2); gain2.connect(gainNode);
+        osc3.connect(gain3); gain3.connect(gainNode);
+        osc4.connect(gain4); gain4.connect(gainNode);
+
+        // Piano envelope: sharp attack, quick initial decay, long string ring
         gainNode.gain.setValueAtTime(0, t);
-        gainNode.gain.linearRampToValueAtTime(1.2, t + 0.02);
-        gainNode.gain.exponentialRampToValueAtTime(0.2, t + 1.5);
+        gainNode.gain.linearRampToValueAtTime(1.5, t + 0.015); 
+        gainNode.gain.exponentialRampToValueAtTime(0.3, t + 0.2); 
+        gainNode.gain.exponentialRampToValueAtTime(0.001, t + 3.0); 
 
-        oscillators.push(osc1, osc2);
+        oscillators.push(osc1, osc2, osc3, osc4);
     }
 
     oscillators.forEach(osc => osc.start(t));

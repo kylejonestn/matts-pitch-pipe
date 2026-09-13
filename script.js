@@ -14,14 +14,13 @@ const notes = [
 ];
 
 const pitchPipe = document.getElementById('pitch-pipe');
-const stopBtn = document.getElementById('stop-btn');
 const themeToggle = document.getElementById('theme-toggle');
 const moonIcon = document.getElementById('moon-icon');
 const sunIcon = document.getElementById('sun-icon');
+const instrumentSelect = document.getElementById('instrument-select');
 
 let audioCtx;
-let oscillator;
-let gainNode;
+let activeOscillators = [];
 let activeBtn = null;
 
 // Initialize Audio Context on user interaction to comply with browser policies
@@ -29,45 +28,116 @@ function initAudio() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
 }
+
+// Load saved instrument
+const savedInstrument = localStorage.getItem('instrument') || 'pure';
+instrumentSelect.value = savedInstrument;
+
+instrumentSelect.addEventListener('change', (e) => {
+    localStorage.setItem('instrument', e.target.value);
+});
 
 function playNote(freq, btn) {
     initAudio();
-    stopNote();
+    stopNote(); // Stop any currently playing note just in case
 
-    oscillator = audioCtx.createOscillator();
-    gainNode = audioCtx.createGain();
+    const instrument = instrumentSelect.value;
+    const t = audioCtx.currentTime;
 
-    oscillator.type = 'sine'; // A smooth tone, typical for pitch pipes
-    oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-    // Envelope to avoid clicking
-    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.05);
-    
-    oscillator.connect(gainNode);
+    const gainNode = audioCtx.createGain();
     gainNode.connect(audioCtx.destination);
     
-    oscillator.start();
+    let oscillators = [];
+
+    if (instrument === 'pure') {
+        const osc = audioCtx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        
+        gainNode.gain.setValueAtTime(0, t);
+        gainNode.gain.linearRampToValueAtTime(0.5, t + 0.05);
+        
+        osc.connect(gainNode);
+        oscillators.push(osc);
+    } else if (instrument === 'pipe') {
+        // Classic pitch pipe: slightly reedy
+        const osc1 = audioCtx.createOscillator();
+        osc1.type = 'square';
+        osc1.frequency.value = freq;
+        
+        const osc2 = audioCtx.createOscillator();
+        osc2.type = 'triangle';
+        osc2.frequency.value = freq;
+
+        // Use a lowpass filter to tame the square wave harshness
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 1200; // Mellow it out
+
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gainNode);
+        
+        // Attack is a bit slower for a reed instrument
+        gainNode.gain.setValueAtTime(0, t);
+        gainNode.gain.linearRampToValueAtTime(0.3, t + 0.1);
+
+        oscillators.push(osc1, osc2);
+    } else if (instrument === 'piano') {
+        // Simple piano-like synth
+        const osc1 = audioCtx.createOscillator();
+        osc1.type = 'triangle';
+        osc1.frequency.value = freq;
+
+        const osc2 = audioCtx.createOscillator();
+        osc2.type = 'sine';
+        osc2.frequency.value = freq * 2; // Add an overtone
+
+        osc1.connect(gainNode);
+        osc2.connect(gainNode);
+
+        // Piano envelope: fast attack, quick initial decay
+        gainNode.gain.setValueAtTime(0, t);
+        gainNode.gain.linearRampToValueAtTime(0.6, t + 0.02);
+        gainNode.gain.exponentialRampToValueAtTime(0.1, t + 1.5);
+
+        oscillators.push(osc1, osc2);
+    }
+
+    oscillators.forEach(osc => osc.start(t));
+    activeOscillators.push({ oscillators, gainNode });
 
     // Update UI
-    if (activeBtn) activeBtn.classList.remove('active');
     btn.classList.add('active');
     activeBtn = btn;
-    stopBtn.style.display = 'block';
 }
 
 function stopNote() {
-    if (oscillator && gainNode) {
-        gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
-        oscillator.stop(audioCtx.currentTime + 0.1);
-        oscillator = null;
+    if (activeOscillators.length > 0) {
+        const t = audioCtx.currentTime;
+        activeOscillators.forEach(({ oscillators, gainNode }) => {
+            // Quick fade out to avoid clicking
+            gainNode.gain.cancelScheduledValues(t);
+            // Read current gain value to ramp down from it smoothly
+            const currentGain = gainNode.gain.value;
+            gainNode.gain.setValueAtTime(currentGain, t);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+            
+            oscillators.forEach(osc => {
+                osc.stop(t + 0.1);
+            });
+        });
+        activeOscillators = [];
     }
+    
     if (activeBtn) {
         activeBtn.classList.remove('active');
         activeBtn = null;
     }
-    stopBtn.style.display = 'none';
 }
 
 // Generate circular layout
@@ -90,23 +160,31 @@ function setupNotes() {
         // Position relative to the container
         btn.style.left = `${x}px`;
         btn.style.top = `${y}px`;
-        // Keep text upright, no rotation on the button itself needed since we used absolute left/top correctly
         
-        btn.addEventListener('mousedown', () => playNote(note.freq, btn));
+        // Mouse events
+        btn.addEventListener('mousedown', (e) => {
+            if (e.button === 0) playNote(note.freq, btn);
+        });
+        btn.addEventListener('mouseup', stopNote);
+        btn.addEventListener('mouseleave', stopNote);
+
+        // Touch events
         btn.addEventListener('touchstart', (e) => {
             e.preventDefault();
             playNote(note.freq, btn);
+        });
+        btn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            stopNote();
+        });
+        btn.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            stopNote();
         });
 
         pitchPipe.appendChild(btn);
     });
 }
-
-stopBtn.addEventListener('mousedown', stopNote);
-stopBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    stopNote();
-});
 
 // Theme handling
 function toggleTheme() {

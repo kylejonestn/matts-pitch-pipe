@@ -271,3 +271,37 @@ body.notes-open .notes-panel {
 body.notes-open .pitch-pipe-container {
     transform: translateY(-15vh);
 }
+
+/* Apple Watch / Micro Screen Responsiveness */
+@media (max-width: 350px) {
+    .pitch-pipe {
+        width: 90vw;
+        height: 90vw;
+    }
+    .note-btn {
+        width: 16vw;
+        height: 16vw;
+        margin-left: -8vw;
+        margin-top: -8vw;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 250px) {
+    .header h1 {
+        display: none; /* Hide text on watch */
+    }
+    .header {
+        padding: 0.5rem;
+        justify-content: center;
+    }
+    .note-btn {
+        font-size: 0.8rem;
+    }
+    .notes-toggle-btn {
+        width: 40px;
+        height: 40px;
+        bottom: 10px;
+        left: 10px;
+    }
+}

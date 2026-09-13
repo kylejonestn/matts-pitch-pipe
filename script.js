@@ -163,24 +163,22 @@ function stopNote() {
 
 // Generate circular layout
 function setupNotes() {
-    const radius = 120; // Radius of the circle
-    const centerX = 160; // Half of pitch-pipe width
-    const centerY = 160; // Half of pitch-pipe height
     const totalNotes = notes.length;
 
     notes.forEach((note, index) => {
         // Start from top (-90 degrees or -PI/2)
         const angle = (index / totalNotes) * 2 * Math.PI - (Math.PI / 2);
         
-        const x = centerX + radius * Math.cos(angle);
-        const y = centerY + radius * Math.sin(angle);
+        // 50% is the center. 40% is the radius to keep buttons inside the container
+        const x = 50 + 40 * Math.cos(angle);
+        const y = 50 + 40 * Math.sin(angle);
 
         const btn = document.createElement('button');
         btn.className = 'note-btn';
         btn.textContent = note.name;
-        // Position relative to the container
-        btn.style.left = `${x}px`;
-        btn.style.top = `${y}px`;
+        // Position relative to the container using percentages
+        btn.style.left = `${x}%`;
+        btn.style.top = `${y}%`;
         
         // Mouse events
         btn.addEventListener('mousedown', (e) => {

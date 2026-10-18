@@ -157,7 +157,7 @@ body {
     overflow: visible;
 }
 
-/* Steady Fullscreen Color Tint (stays constant half opacity without flashing) */
+/* Steady Fullscreen Color Tint (instant switch with zero fade, Simon Says feel) */
 .color-backdrop {
     position: fixed;
     top: 0;
@@ -167,7 +167,7 @@ body {
     pointer-events: none;
     z-index: 0;
     opacity: 0;
-    transition: opacity 0.3s ease-out, background-color 0.3s ease-out;
+    transition: none;
 }
 
 body.has-last-note .color-backdrop,
@@ -196,7 +196,7 @@ body[data-theme="dark"].note-playing .color-backdrop {
     font-weight: 400;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: background-color 0.1s, color 0.1s, transform 0.1s, box-shadow 0.1s;
+    transition: transform 0.05s ease-out;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
     touch-action: none;

@@ -3,79 +3,105 @@ const notes = [
         name: 'C4',
         html: 'C<span class="octave">4</span>',
         ariaLabel: 'C 4',
-        freq: 261.63
+        freq: 261.63,
+        color: '#e11d48', // Crimson Red
+        textColor: '#ffffff'
     },
     {
         name: 'C# / Db',
         html: '<span class="acc-diag"><span class="acc-top">#</span><span class="acc-slash">/</span><span class="acc-bot">♭</span></span>',
         ariaLabel: 'C sharp / D flat',
-        freq: 277.18
+        freq: 277.18,
+        color: '#f97316', // Orange
+        textColor: '#ffffff'
     },
     {
         name: 'D',
         html: 'D',
         ariaLabel: 'D',
-        freq: 293.66
+        freq: 293.66,
+        color: '#f59e0b', // Amber
+        textColor: '#ffffff'
     },
     {
         name: 'D# / Eb',
         html: '<span class="acc-stack"><span class="acc-top">#</span><span class="acc-div"></span><span class="acc-bot">♭</span></span>',
         ariaLabel: 'D sharp / E flat',
-        freq: 311.13
+        freq: 311.13,
+        color: '#eab308', // Sun Yellow
+        textColor: '#0f172a'
     },
     {
         name: 'E',
         html: 'E',
         ariaLabel: 'E',
-        freq: 329.63
+        freq: 329.63,
+        color: '#84cc16', // Lime Green
+        textColor: '#0f172a'
     },
     {
         name: 'F',
         html: 'F',
         ariaLabel: 'F',
-        freq: 349.23
+        freq: 349.23,
+        color: '#10b981', // Emerald Green
+        textColor: '#ffffff'
     },
     {
         name: 'F# / Gb',
         html: '<span class="acc-horiz"><span class="acc-left">♭</span><span class="acc-bar">|</span><span class="acc-right">#</span></span>',
         ariaLabel: 'F sharp / G flat',
-        freq: 369.99
+        freq: 369.99,
+        color: '#06b6d4', // Cyan
+        textColor: '#ffffff'
     },
     {
         name: 'G',
         html: 'G',
         ariaLabel: 'G',
-        freq: 392.00
+        freq: 392.00,
+        color: '#0284c7', // Sky Blue
+        textColor: '#ffffff'
     },
     {
         name: 'G# / Ab',
         html: '<span class="acc-diag"><span class="acc-top">♭</span><span class="acc-slash">/</span><span class="acc-bot">#</span></span>',
         ariaLabel: 'G sharp / A flat',
-        freq: 415.30
+        freq: 415.30,
+        color: '#3b82f6', // Royal Blue
+        textColor: '#ffffff'
     },
     {
         name: 'A',
         html: 'A',
         ariaLabel: 'A',
-        freq: 440.00
+        freq: 440.00,
+        color: '#6366f1', // Indigo
+        textColor: '#ffffff'
     },
     {
         name: 'A# / Bb',
         html: '<span class="acc-diag"><span class="acc-top">♭</span><span class="acc-slash">/</span><span class="acc-bot">#</span></span>',
         ariaLabel: 'A sharp / B flat',
-        freq: 466.16
+        freq: 466.16,
+        color: '#8b5cf6', // Purple
+        textColor: '#ffffff'
     },
     {
         name: 'B',
         html: 'B',
         ariaLabel: 'B',
-        freq: 493.88
+        freq: 493.88,
+        color: '#d946ef', // Magenta / Fuchsia
+        textColor: '#ffffff'
     },
     {
         name: 'C5',
         html: 'C<span class="octave">5</span>',
         ariaLabel: 'C 5',
-        freq: 523.25
+        freq: 523.25,
+        color: '#f43f5e', // Rose Pink
+        textColor: '#ffffff'
     }
 ];
 
@@ -201,6 +227,12 @@ function playNote(freq, btn) {
     // Update UI
     btn.classList.add('active');
     activeBtn = btn;
+
+    const colorBackdrop = document.getElementById('color-backdrop');
+    if (colorBackdrop && note && note.color) {
+        colorBackdrop.style.backgroundColor = note.color;
+        document.body.classList.add('note-playing');
+    }
 }
 
 function stopNote() {
@@ -225,6 +257,7 @@ function stopNote() {
         activeBtn.classList.remove('active');
         activeBtn = null;
     }
+    document.body.classList.remove('note-playing');
 }
 
 // Generate circular layout
@@ -244,13 +277,19 @@ function setupNotes() {
         btn.className = 'note-btn';
         btn.innerHTML = note.html || note.name;
         btn.setAttribute('aria-label', note.ariaLabel || note.name);
+        if (note.color) {
+            btn.style.setProperty('--note-color', note.color);
+        }
+        if (note.textColor) {
+            btn.style.setProperty('--note-text-color', note.textColor);
+        }
         // Position relative to the container using percentages
         btn.style.left = `${x}%`;
         btn.style.top = `${y}%`;
         
         // Mouse events
         btn.addEventListener('mousedown', (e) => {
-            if (e.button === 0) playNote(note.freq, btn);
+            if (e.button === 0) playNote(note.freq, btn, note);
         });
         btn.addEventListener('mouseup', stopNote);
         btn.addEventListener('mouseleave', stopNote);
@@ -258,7 +297,7 @@ function setupNotes() {
         // Touch events
         btn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            playNote(note.freq, btn);
+            playNote(note.freq, btn, note);
         });
         btn.addEventListener('touchend', (e) => {
             e.preventDefault();

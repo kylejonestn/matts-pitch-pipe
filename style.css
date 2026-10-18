@@ -50,6 +50,8 @@ body {
 }
 
 .header {
+    position: relative;
+    z-index: 2;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -131,6 +133,8 @@ body {
 }
 
 .pitch-pipe-container {
+    position: relative;
+    z-index: 2;
     flex: 1;
     display: flex;
     justify-content: center;
@@ -148,8 +152,29 @@ body {
     border-radius: 50%;
     box-shadow: var(--shadow);
     border: 2px solid var(--border-color);
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, border-color 0.15s, box-shadow 0.15s;
     flex-shrink: 0;
+}
+
+/* Simon Says Fullscreen Color Glow */
+.color-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.15s ease-out, background-color 0.15s ease-out;
+}
+
+body.note-playing .color-backdrop {
+    opacity: 0.2;
+}
+
+body.note-playing .pitch-pipe {
+    border-color: var(--active-pipe-color, var(--border-color));
 }
 
 .note-btn {
@@ -167,7 +192,7 @@ body {
     font-weight: 400;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: background-color 0.1s, color 0.1s, transform 0.1s;
+    transition: background-color 0.1s, color 0.1s, transform 0.1s, box-shadow 0.1s;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
     touch-action: none;
@@ -178,10 +203,10 @@ body {
 }
 
 .note-btn:active, .note-btn.active {
-    background-color: var(--note-active);
-    color: var(--note-active-text);
+    background-color: var(--note-color, var(--note-active)) !important;
+    color: var(--note-text-color, var(--note-active-text)) !important;
     transform: translate(-50%, -50%) scale(1.1);
-    box-shadow: 0 0 15px var(--note-active);
+    box-shadow: 0 0 22px var(--note-color, var(--note-active)) !important;
 }
 
 .octave {

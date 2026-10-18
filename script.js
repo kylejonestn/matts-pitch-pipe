@@ -233,7 +233,9 @@ function playNote(freq, btn, note) {
         colorBackdrop.style.backgroundColor = note.color;
         document.documentElement.style.setProperty('--active-pipe-color', note.color);
         document.documentElement.style.setProperty('--active-pipe-glow', note.color + '80');
+        document.body.classList.add('has-last-note');
         document.body.classList.add('note-playing');
+        localStorage.setItem('last-note-color', note.color);
     }
 }
 
@@ -340,6 +342,17 @@ if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
     document.body.setAttribute('data-theme', 'dark');
     moonIcon.style.display = 'block';
     sunIcon.style.display = 'none';
+}
+
+// Restore last played note color on background if available
+const savedLastColor = localStorage.getItem('last-note-color');
+if (savedLastColor) {
+    const colorBackdrop = document.getElementById('color-backdrop');
+    if (colorBackdrop) {
+        colorBackdrop.style.backgroundColor = savedLastColor;
+        document.documentElement.style.setProperty('--active-pipe-color', savedLastColor);
+        document.body.classList.add('has-last-note');
+    }
 }
 
 setupNotes();

@@ -188,15 +188,25 @@ body.note-playing .pitch-pipe {
     pointer-events: none;
     z-index: 0;
     opacity: 0;
-    transition: opacity 0.15s ease-out, background-color 0.15s ease-out;
+    transition: opacity 0.25s ease-out, background-color 0.25s ease-out;
 }
 
+/* Resting state: stays at half opacity of the last pressed note */
+body.has-last-note .color-backdrop {
+    opacity: 0.25;
+}
+
+body[data-theme="dark"].has-last-note .color-backdrop {
+    opacity: 0.32;
+}
+
+/* Full punch while note is actively pressed */
 body.note-playing .color-backdrop {
-    opacity: 0.45;
+    opacity: 0.55;
 }
 
 body[data-theme="dark"].note-playing .color-backdrop {
-    opacity: 0.58;
+    opacity: 0.65;
 }
 
 .note-btn {

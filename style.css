@@ -154,6 +154,28 @@ body {
     border: 2px solid var(--border-color);
     transition: background-color 0.3s, border-color 0.15s, box-shadow 0.15s;
     flex-shrink: 0;
+    overflow: visible;
+}
+
+.pitch-pipe::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-color: var(--active-pipe-color);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease-out;
+    z-index: 0;
+}
+
+body.note-playing .pitch-pipe::before {
+    opacity: 0.22;
+}
+
+body.note-playing .pitch-pipe {
+    border-color: var(--active-pipe-color, var(--border-color));
+    box-shadow: 0 0 35px var(--active-pipe-glow, rgba(0,0,0,0.25)), var(--shadow);
 }
 
 /* Simon Says Fullscreen Color Glow */
@@ -170,15 +192,16 @@ body {
 }
 
 body.note-playing .color-backdrop {
-    opacity: 0.2;
+    opacity: 0.45;
 }
 
-body.note-playing .pitch-pipe {
-    border-color: var(--active-pipe-color, var(--border-color));
+body[data-theme="dark"].note-playing .color-backdrop {
+    opacity: 0.58;
 }
 
 .note-btn {
     position: absolute;
+    z-index: 1;
     width: var(--btn-size);
     height: var(--btn-size);
     left: 50%;

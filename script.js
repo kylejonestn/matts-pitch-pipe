@@ -231,6 +231,8 @@ function playNote(freq, btn) {
     const colorBackdrop = document.getElementById('color-backdrop');
     if (colorBackdrop && note && note.color) {
         colorBackdrop.style.backgroundColor = note.color;
+        document.documentElement.style.setProperty('--active-pipe-color', note.color);
+        document.documentElement.style.setProperty('--active-pipe-glow', note.color + '80');
         document.body.classList.add('note-playing');
     }
 }

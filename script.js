@@ -137,7 +137,7 @@ if (instrumentSelect) {
     });
 }
 
-function playNote(freq, btn) {
+function playNote(freq, btn, note) {
     initAudio();
     stopNote(); // Stop any currently playing note just in case
 

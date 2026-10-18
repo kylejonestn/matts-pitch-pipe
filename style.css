@@ -157,28 +157,7 @@ body {
     overflow: visible;
 }
 
-.pitch-pipe::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background-color: var(--active-pipe-color);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s ease-out;
-    z-index: 0;
-}
-
-body.note-playing .pitch-pipe::before {
-    opacity: 0.22;
-}
-
-body.note-playing .pitch-pipe {
-    border-color: var(--active-pipe-color, var(--border-color));
-    box-shadow: 0 0 35px var(--active-pipe-glow, rgba(0,0,0,0.25)), var(--shadow);
-}
-
-/* Simon Says Fullscreen Color Glow */
+/* Steady Fullscreen Color Tint (stays constant half opacity without flashing) */
 .color-backdrop {
     position: fixed;
     top: 0;
@@ -188,25 +167,17 @@ body.note-playing .pitch-pipe {
     pointer-events: none;
     z-index: 0;
     opacity: 0;
-    transition: opacity 0.25s ease-out, background-color 0.25s ease-out;
+    transition: opacity 0.3s ease-out, background-color 0.3s ease-out;
 }
 
-/* Resting state: stays at half opacity of the last pressed note */
-body.has-last-note .color-backdrop {
+body.has-last-note .color-backdrop,
+body.note-playing .color-backdrop {
     opacity: 0.25;
 }
 
-body[data-theme="dark"].has-last-note .color-backdrop {
-    opacity: 0.32;
-}
-
-/* Full punch while note is actively pressed */
-body.note-playing .color-backdrop {
-    opacity: 0.55;
-}
-
+body[data-theme="dark"].has-last-note .color-backdrop,
 body[data-theme="dark"].note-playing .color-backdrop {
-    opacity: 0.65;
+    opacity: 0.30;
 }
 
 .note-btn {

@@ -1,16 +1,82 @@
 const notes = [
-    { name: 'C', freq: 261.63 },
-    { name: 'C#', freq: 277.18 },
-    { name: 'D', freq: 293.66 },
-    { name: 'D#', freq: 311.13 },
-    { name: 'E', freq: 329.63 },
-    { name: 'F', freq: 349.23 },
-    { name: 'F#', freq: 369.99 },
-    { name: 'G', freq: 392.00 },
-    { name: 'G#', freq: 415.30 },
-    { name: 'A', freq: 440.00 },
-    { name: 'A#', freq: 466.16 },
-    { name: 'B', freq: 493.88 }
+    {
+        name: 'C4',
+        html: 'C<span class="octave">4</span>',
+        ariaLabel: 'C 4',
+        freq: 261.63
+    },
+    {
+        name: 'C# / Db',
+        html: '<span class="acc-diag"><span class="acc-top">#</span><span class="acc-slash">/</span><span class="acc-bot">♭</span></span>',
+        ariaLabel: 'C sharp / D flat',
+        freq: 277.18
+    },
+    {
+        name: 'D',
+        html: 'D',
+        ariaLabel: 'D',
+        freq: 293.66
+    },
+    {
+        name: 'D# / Eb',
+        html: '<span class="acc-stack"><span class="acc-top">#</span><span class="acc-div"></span><span class="acc-bot">♭</span></span>',
+        ariaLabel: 'D sharp / E flat',
+        freq: 311.13
+    },
+    {
+        name: 'E',
+        html: 'E',
+        ariaLabel: 'E',
+        freq: 329.63
+    },
+    {
+        name: 'F',
+        html: 'F',
+        ariaLabel: 'F',
+        freq: 349.23
+    },
+    {
+        name: 'F# / Gb',
+        html: '<span class="acc-horiz"><span class="acc-left">♭</span><span class="acc-bar">|</span><span class="acc-right">#</span></span>',
+        ariaLabel: 'F sharp / G flat',
+        freq: 369.99
+    },
+    {
+        name: 'G',
+        html: 'G',
+        ariaLabel: 'G',
+        freq: 392.00
+    },
+    {
+        name: 'G# / Ab',
+        html: '<span class="acc-diag"><span class="acc-top">♭</span><span class="acc-slash">/</span><span class="acc-bot">#</span></span>',
+        ariaLabel: 'G sharp / A flat',
+        freq: 415.30
+    },
+    {
+        name: 'A',
+        html: 'A',
+        ariaLabel: 'A',
+        freq: 440.00
+    },
+    {
+        name: 'A# / Bb',
+        html: '<span class="acc-diag"><span class="acc-top">♭</span><span class="acc-slash">/</span><span class="acc-bot">#</span></span>',
+        ariaLabel: 'A sharp / B flat',
+        freq: 466.16
+    },
+    {
+        name: 'B',
+        html: 'B',
+        ariaLabel: 'B',
+        freq: 493.88
+    },
+    {
+        name: 'C5',
+        html: 'C<span class="octave">5</span>',
+        ariaLabel: 'C 5',
+        freq: 523.25
+    }
 ];
 
 const pitchPipe = document.getElementById('pitch-pipe');
@@ -166,8 +232,9 @@ function setupNotes() {
     const totalNotes = notes.length;
 
     notes.forEach((note, index) => {
-        // Start from top (-90 degrees or -PI/2)
-        const angle = (index / totalNotes) * 2 * Math.PI - (Math.PI / 2);
+        // For 13 notes: F#/Gb (index 6) is at bottom (PI/2 = 90 deg)
+        // C4 (index 0) and C5 (index 12) symmetrically flank 12 o'clock (-PI/2)
+        const angle = (Math.PI / 2) + (index - 6) * (2 * Math.PI / totalNotes);
         
         // 50% is the center. 40% is the radius to keep buttons inside the container
         const x = 50 + 40 * Math.cos(angle);
@@ -175,7 +242,8 @@ function setupNotes() {
 
         const btn = document.createElement('button');
         btn.className = 'note-btn';
-        btn.textContent = note.name;
+        btn.innerHTML = note.html || note.name;
+        btn.setAttribute('aria-label', note.ariaLabel || note.name);
         // Position relative to the container using percentages
         btn.style.left = `${x}%`;
         btn.style.top = `${y}%`;

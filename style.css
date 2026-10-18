@@ -9,10 +9,10 @@
     --shadow: 0 10px 30px rgba(0,0,0,0.1);
     --border-color: #ddd;
 
-    /* Responsive pitch pipe sizing */
+    /* Responsive pitch pipe sizing for 13 notes */
     --pipe-size: min(85vw, 62vh, 340px);
-    --btn-size: calc(var(--pipe-size) * 0.185);
-    --btn-font: calc(var(--btn-size) * 0.38);
+    --btn-size: calc(var(--pipe-size) * 0.172);
+    --btn-font: calc(var(--btn-size) * 0.44);
 }
 
 [data-theme="dark"] {
@@ -164,13 +164,17 @@ body {
     background-color: var(--note-bg);
     color: var(--text-color);
     font-size: var(--btn-font);
-    font-weight: bold;
+    font-weight: 400;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     transition: background-color 0.1s, color 0.1s, transform 0.1s;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
     touch-action: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
 }
 
 .note-btn:active, .note-btn.active {
@@ -178,6 +182,95 @@ body {
     color: var(--note-active-text);
     transform: translate(-50%, -50%) scale(1.1);
     box-shadow: 0 0 15px var(--note-active);
+}
+
+.octave {
+    font-size: 0.6em;
+    vertical-align: 0.12em;
+    margin-left: 1px;
+    font-weight: 400;
+}
+
+/* Diagonal Accidental (#/♭ and ♭/#) */
+.acc-diag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    font-size: 0.82em;
+}
+
+.acc-diag .acc-top {
+    position: absolute;
+    top: 18%;
+    left: 18%;
+    font-size: 0.82em;
+    line-height: 1;
+}
+
+.acc-diag .acc-slash {
+    font-size: 1.15em;
+    font-weight: 300;
+    opacity: 0.6;
+    transform: rotate(12deg);
+    line-height: 1;
+}
+
+.acc-diag .acc-bot {
+    position: absolute;
+    bottom: 18%;
+    right: 18%;
+    font-size: 0.82em;
+    line-height: 1;
+}
+
+/* Stacked Accidental (# over ♭ with horizontal divider) */
+.acc-stack {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 0.76em;
+    line-height: 1;
+}
+
+.acc-stack .acc-top {
+    font-size: 0.9em;
+    margin-bottom: 1px;
+}
+
+.acc-stack .acc-div {
+    width: 48%;
+    height: 1.5px;
+    background-color: currentColor;
+    opacity: 0.55;
+    margin: 1px 0;
+}
+
+.acc-stack .acc-bot {
+    font-size: 0.9em;
+    margin-top: 1px;
+}
+
+/* Horizontal Accidental (♭|# with vertical bar) */
+.acc-horiz {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 0.8em;
+    gap: 2px;
+}
+
+.acc-horiz .acc-bar {
+    font-weight: 300;
+    opacity: 0.6;
+    margin: 0 1px;
 }
 
 /* Notes Panel Styles (Portrait / Default) */
@@ -288,8 +381,8 @@ body.notes-open .pitch-pipe-container {
     :root {
         /* Height is the limiting dimension in landscape */
         --pipe-size: min(calc(100dvh - 54px), calc(100vh - 54px), calc(100vw - 120px), 280px);
-        --btn-size: calc(var(--pipe-size) * 0.185);
-        --btn-font: calc(var(--btn-size) * 0.38);
+        --btn-size: calc(var(--pipe-size) * 0.172);
+        --btn-font: calc(var(--btn-size) * 0.44);
     }
 
     .header {

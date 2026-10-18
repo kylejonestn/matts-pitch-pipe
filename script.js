@@ -404,3 +404,36 @@ clearNotesBtn.addEventListener('click', () => {
     localStorage.removeItem('setlist-notes');
     notesTextarea.focus();
 });
+
+// Force clean refresh when tapping the header title (bypasses iOS WebClip / Safari cache)
+const appTitle = document.getElementById('app-title') || document.querySelector('.header h1');
+if (appTitle) {
+    let isRefreshing = false;
+    const forceCleanRefresh = (e) => {
+        if (isRefreshing) return;
+        isRefreshing = true;
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        appTitle.textContent = 'Refreshing...';
+        appTitle.style.opacity = '0.5';
+
+        // Clear any CacheStorage caches if supported
+        if ('caches' in window) {
+            caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).catch(() => {});
+        }
+
+        // Bust Safari / iOS WebClip cache by updating URL timestamp
+        const url = new URL(window.location.href);
+        url.searchParams.set('reload', Date.now());
+        
+        setTimeout(() => {
+            window.location.replace(url.toString());
+        }, 80);
+    };
+
+    appTitle.addEventListener('click', forceCleanRefresh);
+    appTitle.addEventListener('touchend', forceCleanRefresh);
+}
